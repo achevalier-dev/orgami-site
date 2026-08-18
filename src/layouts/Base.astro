@@ -17,18 +17,14 @@ const site = "https://orgami.dev";
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#efe9dc" />
-
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/fraunces.woff2" crossorigin />
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/newsreader.woff2" crossorigin />
-
+    <meta name="theme-color" content="#fcfcfa" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/jetbrains.woff2" crossorigin />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={`${site}/og.png`} />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-
   <body>
     <slot />
   </body>

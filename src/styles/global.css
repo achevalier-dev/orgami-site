@@ -1,26 +1,12 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   orgami — org + origami. The page is a sheet of paper: ivory ground, ink,
-   creases that catch light, and one vermilion mark. It commits to that world
-   rather than carrying a second theme, so every colour here is painted, never
-   inherited from whatever the reader's system prefers.
+   A datasheet, not a pitch. Everything on this page is a claim in the left
+   column and the file that proves it in the right, so the type is the type the
+   tool prints, the ground is paper white, and the only colours that appear are
+   the four the map uses for node kinds. There is no accent to decorate with.
 --------------------------------------------------------------------------- */
 
-@font-face {
-  font-family: "Fraunces";
-  src: url("/fonts/fraunces.woff2") format("woff2-variations");
-  font-weight: 400 800;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Newsreader";
-  src: url("/fonts/newsreader.woff2") format("woff2-variations");
-  font-weight: 400 600;
-  font-style: normal;
-  font-display: swap;
-}
 @font-face {
   font-family: "JetBrains Mono";
   src: url("/fonts/jetbrains.woff2") format("woff2-variations");
@@ -30,45 +16,39 @@
 }
 
 :root {
-  /* paper, and the two faces a fold makes */
-  --paper: #efe9dc;
-  --paper-lit: #f6f2e9;
-  --paper-shade: #e2d9c6;
-  --paper-deep: #d6cab2;
+  --sheet: #fcfcfa;
+  --sheet-2: #f4f4f1;
+  --ink: #101010;
+  --ink-2: #3d3d3a;
+  --ink-3: #6e6e69;
+  --hair: #dedcd6;
+  --hair-2: #c6c3bb;
+  --link: #0b4f8f;
 
-  --ink: #16120e;
-  --ink-soft: #4a4038;
-  --ink-faint: #8a7d6d;
-
-  --vermilion: #d6452b;
-  --vermilion-deep: #a8331f;
-
-  /* the four kinds, mixed for ink on paper rather than light on black */
   --k-repo: #1f4e79;
-  --k-host: #b4552a;
-  --k-tool: #3f6b44;
-  --k-service: #6a4a8c;
+  --k-host: #a4531f;
+  --k-tool: #2f6b3a;
+  --k-service: #5c3d86;
 
-  /* the plate: printed matter dropped onto the sheet */
-  --plate: #17171c;
-  --plate-ink: #d8d3c8;
+  --plate: #14161a;
+  --plate-ink: #d7d7d2;
+  --plate-3: #7c7c76;
   --plate-blue: #7fb2dc;
-  --plate-rust: #d79a72;
   --plate-green: #9dbf9d;
-  --plate-faint: #6d6a64;
+  --plate-rust: #d79a72;
 
   color-scheme: light;
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-paper-lit: var(--paper-lit);
-  --color-paper-shade: var(--paper-shade);
-  --color-paper-deep: var(--paper-deep);
+  --color-sheet: var(--sheet);
+  --color-sheet-2: var(--sheet-2);
   --color-ink: var(--ink);
-  --color-ink-soft: var(--ink-soft);
-  --color-ink-faint: var(--ink-faint);
-  --color-vermilion: var(--vermilion);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-hair: var(--hair);
+  --color-hair-2: var(--hair-2);
+  --color-link: var(--link);
   --color-k-repo: var(--k-repo);
   --color-k-host: var(--k-host);
   --color-k-tool: var(--k-tool);
@@ -76,124 +56,99 @@
   --color-plate: var(--plate);
   --color-plate-ink: var(--plate-ink);
 
-  --font-display: "Fraunces", Georgia, serif;
-  --font-body: "Newsreader", Georgia, serif;
-  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas,
+    monospace;
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 3rem;
-  }
+  html { scroll-behavior: smooth; scroll-padding-top: 1.5rem; }
 
   body {
-    background-color: var(--paper);
-    /* the grain of a sheet: two barely-there washes, no image to download */
-    background-image:
-      radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.5), transparent 42%),
-      radial-gradient(circle at 82% 78%, rgba(160, 140, 110, 0.14), transparent 46%);
-    background-attachment: fixed;
+    background: var(--sheet);
     color: var(--ink);
-    font-family: var(--font-body);
-    font-size: 19px;
-    line-height: 1.6;
-    font-optical-sizing: auto;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.68;
+    font-variant-numeric: tabular-nums;
     -webkit-font-smoothing: antialiased;
   }
 
-  ::selection {
-    background: var(--vermilion);
-    color: var(--paper-lit);
-  }
+  ::selection { background: var(--ink); color: var(--sheet); }
 
-  a {
-    color: var(--ink);
-    text-decoration-color: var(--vermilion);
-    text-decoration-thickness: 1.5px;
-    text-underline-offset: 4px;
-    transition: color 0.15s ease;
-  }
-  a:hover { color: var(--vermilion-deep); }
+  a { color: var(--link); text-underline-offset: 3px; }
+  a:hover { text-decoration-thickness: 2px; }
 
-  :focus-visible {
-    outline: 2px solid var(--vermilion);
-    outline-offset: 3px;
-  }
+  :focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 
-  h1, h2, h3 {
-    font-family: var(--font-display);
-    font-variation-settings: "SOFT" 20, "WONK" 1;
-    text-wrap: balance;
-  }
+  h1, h2, h3 { font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
+  em { font-style: normal; text-decoration: underline; text-decoration-style: dotted; }
 }
 
 @layer components {
-  /* A crease: light on one side, shadow on the other. Sections are separated
-     by folds, not by hairlines. */
-  .crease {
-    position: relative;
-    height: 34px;
-    background: linear-gradient(
-      to bottom,
-      var(--paper-shade) 0%,
-      var(--paper-deep) 48%,
-      var(--paper-lit) 52%,
-      var(--paper) 100%
-    );
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  /* A row of the ledger: the claim, and the file that proves it. */
+  .row {
+    display: grid;
+    gap: 10px 40px;
+    padding: 26px 0;
+    border-top: 1px solid var(--hair);
+  }
+  @media (min-width: 900px) {
+    .row { grid-template-columns: minmax(0, 47fr) minmax(0, 53fr); }
   }
 
-  /* Printed matter laid on the sheet: a dark plate with a paper edge. */
+  .label {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
   .plate {
     background: var(--plate);
     color: var(--plate-ink);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    line-height: 1.65;
-    padding: 22px 24px;
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 14px 16px;
     overflow-x: auto;
-    border: 6px solid var(--paper-lit);
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.6),
-      0 18px 34px -22px rgba(40, 28, 14, 0.55),
-      0 2px 6px rgba(40, 28, 14, 0.14);
   }
   .plate pre { margin: 0; font: inherit; }
-  .plate .c { color: var(--plate-faint); }
+  .plate .c { color: var(--plate-3); }
   .plate .a { color: var(--plate-blue); }
-  .plate .h { color: var(--plate-rust); }
   .plate .t { color: var(--plate-green); }
-  .plate .b { color: #f2eee4; font-weight: 600; }
+  .plate .h { color: var(--plate-rust); }
+  .plate .b { color: #f0f0ec; font-weight: 600; }
 
-  /* Marginalia: the file a claim came from, set in the outer margin like a
-     printed reference. This page keeps orgami's own rule. */
-  .margin-note {
-    font-family: var(--font-mono);
-    font-size: 11.5px;
-    line-height: 1.45;
-    color: var(--ink-faint);
-    border-left: 2px solid var(--vermilion);
-    padding-left: 10px;
+  /* Receipts. A claim without one does not go on this page. */
+  .receipt {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--link);
   }
+  .receipt::before { content: "→"; color: var(--ink-3); }
 
-  .rule-mark {
-    color: var(--vermilion);
-    font-family: var(--font-mono);
+  table.data { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.data th {
+    text-align: left;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    border-bottom: 1px solid var(--hair-2);
+    padding: 0 18px 7px 0;
   }
-
-  .lede {
-    font-size: clamp(21px, 2.3vw, 25px);
-    line-height: 1.45;
-    color: var(--ink-soft);
+  table.data td {
+    border-bottom: 1px solid var(--hair);
+    padding: 8px 18px 8px 0;
+    vertical-align: top;
+    color: var(--ink-2);
   }
+  table.data td:first-child { color: var(--ink); white-space: nowrap; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
 }

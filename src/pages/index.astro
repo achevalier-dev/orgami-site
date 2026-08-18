@@ -1,352 +1,275 @@
 ---
 import Base from "../layouts/Base.astro";
-import Section from "../components/Section.astro";
 import Command from "../components/Command.astro";
 import Demo from "../components/Demo.astro";
-import Plate from "../components/Plate.astro";
-import Fold from "../components/Fold.astro";
-import Kind from "../components/Kind.astro";
+import Row from "../components/Row.astro";
+
+const DEMO = "https://github.com/achevalier-dev/orgami-demo/blob/main";
+const SRC = "https://github.com/achevalier-dev/orgami/blob/main";
 
 const install =
   "curl -fsSL https://raw.githubusercontent.com/achevalier-dev/orgami/main/bootstrap.sh | bash";
 
-const keys: [string, string][] = [
-  ["tab", "Move between the map, the repositories, the notes and the recaps"],
-  ["type", "Filter the list"],
-  ["enter", "Print what is under the cursor into your scrollback, to copy or pipe"],
-  ["ctrl-o", "Open the repository on GitHub"],
-  ["ctrl-n", "Write a note against the repository you are reading"],
+// Measured on the run that produced github.com/achevalier-dev/orgami-demo.
+const run = [
+  ["organization", "github.com/honojs, public"],
+  ["repositories read", "14"],
+  ["scan time", "4s over cached clones"],
+  ["graph", "17 nodes, 49 edges"],
+  ["model calls", "1, for the daily digest"],
+  ["output", "35 files, all of it public"],
 ];
 
-const makes: { name: string; colour: string; body: string }[] = [
-  {
-    name: "The map",
-    colour: "var(--k-repo)",
-    body: "Deploy tooling, servers, backing services, frameworks, run and test commands, routes, and which repositories reference which. One graph.json; the architecture doc, the diagrams and the terminal browser all render from it.",
-  },
-  {
-    name: "The weekly recap",
-    colour: "var(--k-host)",
-    body: "Every pull request the organization merged, grouped by why it happened rather than by repository, with a section on how the team worked — review concentration, cycle time, how much merged with nobody else reading it.",
-  },
-  {
-    name: "The daily digest",
-    colour: "var(--k-tool)",
-    body: "What merged, what opened, what is waiting on someone, and commits with no pull request behind them — the half a merge-based recap cannot see. A quiet day writes no file at all.",
-  },
-  {
-    name: "Team notes",
-    colour: "var(--k-service)",
-    body: "The cause someone found at 2am, the reason the obvious fix does not work. Screened for credentials and for any other client on the machine before they are written, and again before they are pushed.",
-  },
+const coverage = [
+  ["references", "26", "file:line", "A literal string in a committed file — an import, a manifest entry, a URL."],
+  ["uses", "11", "file", "The file's existence is the evidence: a Dockerfile, a workflow directory."],
+  ["written-in", "12", "none", "GitHub's own language field. No file states it, so no file is cited."],
+];
+
+const limits = [
+  [
+    "Runtime wiring is invisible.",
+    "Services joined by an environment variable set in a dashboard, a service mesh, or a shared gateway leave nothing in a repository. A missing edge means not found in committed configuration — it never means not connected.",
+  ],
+  [
+    "Which repositories change together is correlation.",
+    "It is counted from same-day and same-week co-occurrence in merged pull requests, with bots excluded. It is a useful blast radius and it is not a dependency.",
+  ],
+  [
+    "Endpoints come from committed source.",
+    "A route defined at runtime is not found, and until recently routes declared inside test files were counted as real ones — reported by a contributor, fixed in the open.",
+  ],
+  [
+    "The scan is pattern matching.",
+    "Every organization it has never met is a gap in it. A stack it does not recognize produces a repository page with an empty stack, not a guess at one.",
+  ],
+  [
+    "The model never counts.",
+    "jq computes every figure in every report and hands them over. The model writes sentences around numbers it was given, and its links are generated afterwards from references that already exist.",
+  ],
 ];
 ---
 
 <Base
   title="orgami"
-  description="Map every repository a GitHub organization has, recap what it merges, and hand all of it to your coding agent before you type."
+  description="Map every repository a GitHub organization has, with the file:line behind every edge. Read the full unedited output of a real run before you install anything."
 >
-  <!-- ── the sheet, folding once ───────────────────────────────────────── -->
-  <header class="mx-auto max-w-[1180px] px-6 pt-12 pb-4 md:px-10 lg:pt-20">
-    <div class="mb-10 flex items-baseline justify-between gap-6">
-      <p class="font-mono text-[12px] tracking-[0.3em] text-ink uppercase">orgami</p>
-      <nav class="flex flex-wrap gap-x-6 gap-y-1 font-mono text-[11.5px] text-ink-faint">
-        <a href="#evidence" class="no-underline hover:text-vermilion">evidence</a>
-        <a href="#makes" class="no-underline hover:text-vermilion">what it makes</a>
-        <a href="#screen" class="no-underline hover:text-vermilion">one screen</a>
-        <a href="#install" class="no-underline hover:text-vermilion">install</a>
-        <a
-          href="https://github.com/achevalier-dev/orgami"
-          class="no-underline hover:text-vermilion">github ↗</a
-        >
-      </nav>
-    </div>
-
-    <div class="grid items-end gap-x-12 gap-y-10 lg:grid-cols-[1.15fr_0.85fr]">
-      <div>
-        <h1
-          class="mb-7 text-[clamp(44px,8.4vw,104px)] leading-[0.92] font-semibold tracking-[-0.035em]"
-        >
-          Know the<br />organization<br />
-          <span class="text-vermilion">before</span> you<br />touch its code.
-        </h1>
-
-        <p class="lede max-w-[46ch]">
-          A flat sheet of repositories, folded into a shape you can see — then handed to your
-          coding agent before you type anything.
-        </p>
+  <main class="mx-auto max-w-[1080px] px-6 py-14 md:px-10 lg:py-20">
+    <!-- masthead ---------------------------------------------------------->
+    <header>
+      <div class="flex flex-wrap items-baseline gap-x-5 gap-y-2">
+        <h1 class="text-[26px] tracking-[-0.02em]">orgami</h1>
+        <p class="label">v1.0.0 · MIT · bash</p>
       </div>
 
-      <div class="lg:pb-3">
-        <Fold />
-        <p class="mt-5 max-w-[42ch] text-[17px] text-ink-soft">
-          orgami reads what a GitHub organization has committed — what each repository is, how to
-          run it, what it talks to, where it deploys — recaps what merged each week, digests each
-          day, and keeps the whole thing in plain files that diff in git.
-        </p>
-      </div>
-    </div>
-
-    <div class="mt-11 grid max-w-[860px] gap-4">
-      <Command command={install} />
-      <p class="flex flex-wrap gap-x-7 gap-y-1 font-mono text-[11.5px] text-ink-faint">
-        <span>MIT</span>
-        <span>macOS · Linux · WSL · Windows</span>
-        <span>bash, gh, jq, fzf, gum</span>
-        <span>two model calls a week</span>
+      <p class="mt-6 max-w-[68ch] text-[17px] leading-[1.55]">
+        Reads what a GitHub organization has committed — what each repository is, how to run it,
+        what it talks to, where it deploys — and writes it to plain files your coding agent reads
+        before you type. Every edge it draws names the file it came from.
       </p>
-    </div>
 
-    <Demo caption="Recorded against the public honojs organization. Every line came out of a committed file." />
-  </header>
+      <div class="mt-8 max-w-[760px]">
+        <Command command={install} />
+      </div>
 
-  <div class="crease"></div>
+      <!-- provenance: the numbers on this page belong to one real run -->
+      <section class="mt-10 border border-hair-2 bg-sheet-2">
+        <p class="border-b border-hair px-5 py-3 text-[12.5px] text-ink-2">
+          Everything below is from one run against a public organization on 18 August 2026. The
+          output was not edited, and it is published in full.
+        </p>
+        <dl class="grid grid-cols-1 gap-px bg-hair sm:grid-cols-2 lg:grid-cols-3">
+          {
+            run.map(([k, v]) => (
+              <div class="bg-sheet-2 px-5 py-3">
+                <dt class="label">{k}</dt>
+                <dd class="text-[14px] text-ink">{v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="border-t border-hair px-5 py-3 text-[12.5px]">
+          <a href="https://github.com/achevalier-dev/orgami-demo" rel="noopener"
+            >Read the whole thing →</a
+          >
+        </p>
+      </section>
+    </header>
 
-  <!-- ── 01 evidence ───────────────────────────────────────────────────── -->
-  <Section
-    id="evidence"
-    folio="01 — evidence"
-    title="Nothing in it is a guess."
-    note="lib/scan.sh — an edge is emitted with the file it was read from, or it is not emitted."
-  >
-    <p class="mb-6 max-w-[62ch]">
-      The scan reads what is committed. Nothing is inferred by a model, and every edge in the map
-      carries the <span class="font-mono text-[0.86em]">file:line</span> it came from, so any claim
-      can be opened and checked.
-    </p>
-    <p class="max-w-[62ch]">
-      When the scan cannot see something it says so rather than inventing it. A missing edge means{" "}
-      <em class="text-vermilion not-italic">not found in committed configuration</em> — never{" "}
-      <em class="not-italic">not connected</em>.
-    </p>
+    <!-- the ledger --------------------------------------------------------->
+    <section class="mt-16">
+      <h2 class="label mb-1">Claims, and what proves them</h2>
 
-    <Plate caption="orgami query gum — one node, and both directions of every edge that named it.">
-      <pre><span class="a">▪ gum</span>  <span class="c">repo</span>
-
-  <span class="c">language     </span>Go
-  <span class="c">description  </span>A tool for glamorous shell scripts
-
-<span class="c">REFERENCES</span>
-  bubbletea                     <span class="c">write/write.go:18</span>
-  glamour                       <span class="c">go.mod:11</span>
-  lipgloss                      <span class="c">write/write.go:19</span>
-
-<span class="c">USES</span>
-  <span class="t">docker</span>                        <span class="c">Dockerfile</span>
-  <span class="t">github-actions</span>                <span class="c">.github/workflows</span>
+      <Row
+        claim="Every reference between repositories names the file and line it was read from, so you can open it."
+        href={`${DEMO}/repos/hono.md`}
+        receipt="orgami-demo/repos/hono.md"
+      >
+        <div class="plate">
+          <pre><span class="a">▪ hono</span>  <span class="c">repo</span>
 
 <span class="c">REFERENCED BY</span>
-  vhs                           <span class="c">examples/README.md:5</span>
-  homebrew-tap                  <span class="c">gum.rb:13</span></pre>
-    </Plate>
+  cli                <span class="c">package.json:2</span>
+  create-hono        <span class="c">package.json:2</span>
+  examples           <span class="c">jsx-ssr/src/components/Layout.tsx:23</span>
+  middleware         <span class="c">packages/zod-openapi/CHANGELOG.md:153</span>
+  node-server        <span class="c">README.md:428</span></pre>
+        </div>
+      </Row>
 
-    <div slot="margin" class="mt-8 lg:mt-0">
-      <Kind />
-    </div>
-  </Section>
+      <Row
+        claim="Not every edge can carry a line, and the map says which kind is which rather than implying they are equal."
+        href={`${DEMO}/graph.json`}
+        receipt="orgami-demo/graph.json"
+      >
+        <table class="data">
+          <thead>
+            <tr><th>edge</th><th>count</th><th>evidence</th><th>why</th></tr>
+          </thead>
+          <tbody>
+            {
+              coverage.map(([kind, n, ev, why]) => (
+                <tr>
+                  <td>{kind}</td>
+                  <td>{n}</td>
+                  <td class="whitespace-nowrap">{ev}</td>
+                  <td class="text-[12.5px]">{why}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </Row>
 
-  <div class="crease"></div>
+      <Row
+        claim="The repository page an agent reads is generated, not written: stack, the exact commands, what it talks to, what it serves, and where it ships."
+        href={`${DEMO}/repos/honox.md`}
+        receipt="orgami-demo/repos/honox.md"
+      >
+        <div class="plate">
+          <pre><span class="b">honox</span> <span class="c">— TypeScript · pushed 3w ago</span>
 
-  <!-- ── 02 what it makes ──────────────────────────────────────────────── -->
-  <Section
-    id="makes"
-    folio="02 — output"
-    title="Five things, all of them files."
-    note="lib/daily.jq — the numbers · prompts/daily.md — what the model may narrate"
-  >
-    <p class="mb-9 max-w-[62ch]">
-      Markdown and JSON on disk, committed to a documentation repository you choose. Where a model
-      is involved it writes prose only: <span class="font-mono text-[0.86em]">jq</span> computes every
-      number and hands it over, because a model asked to both count and narrate does neither reliably.
-    </p>
+<span class="c">RUN IT</span>
+  test              <span class="c">bun typecheck &amp;&amp; bun test:unit &amp;&amp; bun test:e2e</span>
+  build             <span class="c">tsdown &amp;&amp; publint</span>
 
-    <dl class="grid gap-px bg-ink/12 md:grid-cols-2">
-      {
-        makes.map((m) => (
-          <div class="bg-paper-lit px-7 py-7">
-            <dt
-              class="mb-3 font-display text-[21px] font-semibold"
-              style={`border-bottom:3px solid ${m.colour}; display:inline-block; padding-bottom:2px`}
-            >
-              {m.name}
-            </dt>
-            <dd class="text-[16.5px] leading-[1.55] text-ink-soft">{m.body}</dd>
-          </div>
-        ))
-      }
-      <div class="bg-paper-lit px-7 py-7 md:col-span-2">
-        <dt
-          class="mb-3 inline-block border-b-[3px] border-ink/50 pb-[2px] font-display text-[21px] font-semibold"
-        >
-          Runbooks and decisions
-        </dt>
-        <dd class="max-w-[70ch] text-[16.5px] leading-[1.55] text-ink-soft">
-          Per repository: how to run it, which workflow ships it and on what trigger, where its
-          alerts go, what it drags with it when it changes. Alongside them, a decision record mined
-          from merged pull requests one week at a time — what was adopted, dropped or rejected,
-          every bullet carrying its pull request.
-        </dd>
-      </div>
-    </dl>
+<span class="c">TALKS TO</span>
+  → hono            <span class="c">package.json:96</span>
+  ← honox-website   <span class="c">package.json:15</span>
 
-    <p class="mt-9 max-w-[62ch] border-l-[3px] border-vermilion pl-5 text-[18px] text-ink-soft">
-      <strong class="font-semibold text-ink">A day is not a small week.</strong> Most of a day's work
-      has not merged yet, so the digest reads four sources instead of one — and skips the day entirely
-      when nothing landed. A digest that says “nothing happened” every weekend teaches people to stop
-      opening it.
-    </p>
-  </Section>
+<span class="c">SHIPS</span>
+  release on push   <span class="c">.github/workflows/release.yml</span></pre>
+        </div>
+      </Row>
 
-  <div class="crease"></div>
+      <Row
+        claim="The weekly recap and the daily digest are counted by jq and narrated by a model that is handed the numbers, never asked for them."
+        href={`${DEMO}/reports/daily/2026-08-17.md`}
+        receipt="orgami-demo/reports/daily/2026-08-17.md"
+      >
+        <div class="plate">
+          <pre><span class="c"># honojs · Monday 17 August 2026</span>
 
-  <!-- ── 03 one screen ─────────────────────────────────────────────────── -->
-  <Section
-    id="screen"
-    folio="03 — the browser"
-    title="One screen for all of it."
-    note="lib/tui.sh — every pane is a subcommand, so orgami query prints exactly what the preview shows."
-  >
-    <p class="mb-2 max-w-[62ch]">
-      <span class="font-mono text-[0.86em]">orgami view</span> is four tabs over the same data: the
-      map, the repositories, the team's notes and the recaps. The list is on the left, the evidence
-      is in the pane on the right, and the header says how stale the map is and whether this week
-      has a recap yet.
-    </p>
+PatternRouter and LinearRouter matched wildcard routes too
+loosely — /assets* matched /asset. <span class="a">hono#5252</span> fixes the two
+overmatching routers, <span class="a">hono#5236</span> fixes TrieRouter.
 
-    <figure class="my-9">
-      <div
-        class="border-[6px] border-paper-lit bg-plate shadow-[0_1px_0_rgba(255,255,255,0.6),0_24px_44px_-26px_rgba(40,28,14,0.6)]"
+<span class="c">## Waiting on someone</span>
+  <span class="a">hono#3295</span>  <span class="c">728 days, opened by usualoma</span>
+
+<span class="c">8 merged · 12 opened · 3 commits · 2 repos · 3 people</span></pre>
+        </div>
+        <p slot="detail" class="mt-3 text-[12.5px] text-ink-3">
+          The numbers in that last line come from <a href={`${SRC}/lib/daily.jq`}>lib/daily.jq</a>.
+          The prose comes from <a href={`${SRC}/prompts/daily.md`}>prompts/daily.md</a>, which is
+          told the figures and forbidden to compute its own.
+        </p>
+      </Row>
+
+      <Row
+        claim="One command prints what an agent is handed, so you can read it before an agent does."
+        href={`${DEMO}/ARCHITECTURE.md`}
+        receipt="orgami-demo/ARCHITECTURE.md"
+      >
+        <Demo caption="orgami brief, orgami query, the browser, and the week's numbers — recorded against the same organization." />
+      </Row>
+
+      <Row
+        claim="The whole map, the repositories, the team's notes and the recaps browse in one terminal screen."
+        href={`${SRC}/lib/tui.sh`}
+        receipt="orgami/lib/tui.sh"
       >
         <img
           src="/tui.png"
-          alt="The orgami terminal browser: tabs for Map, Repos, Notes and Recaps, a list of repositories on the left, and a repository card on the right showing run commands, linked repositories, deploy targets and endpoints, each with the file and line it came from."
+          alt="The orgami terminal browser: tabs for Map, Repos, Notes and Recaps, a repository list on the left, and a card on the right showing run commands, linked repositories, deploy targets and endpoints with the file each came from."
           loading="lazy"
           decoding="async"
-          class="block h-auto w-full"
+          class="block h-auto w-full border border-hair-2"
         />
-      </div>
-    </figure>
+      </Row>
+    </section>
 
-    <table class="w-full border-collapse text-[17px]">
-      <tbody>
+    <!-- limits ------------------------------------------------------------->
+    <section class="mt-16">
+      <h2 class="label mb-1">What it cannot do</h2>
+      <div class="border-t border-hair">
         {
-          keys.map(([key, what]) => (
-            <tr class="border-b border-ink/12">
-              <td class="w-[1%] py-3 pr-8 align-top font-mono text-[13px] whitespace-nowrap text-vermilion">
-                {key}
-              </td>
-              <td class="py-3 text-ink-soft">{what}</td>
-            </tr>
+          limits.map(([title, body]) => (
+            <div class="grid gap-2 border-b border-hair py-5 lg:grid-cols-[minmax(0,47fr)_minmax(0,53fr)] lg:gap-10">
+              <p class="text-[15px] text-ink">{title}</p>
+              <p class="text-[13.5px] text-ink-2">{body}</p>
+            </div>
           ))
         }
-      </tbody>
-    </table>
-  </Section>
-
-  <div class="crease"></div>
-
-  <!-- ── 04 agents ─────────────────────────────────────────────────────── -->
-  <Section
-    id="agents"
-    folio="04 — for agents"
-    title="Your agent already has it."
-    note="hooks/session-context.sh · lib/mcp.py · lib/agents.sh"
-  >
-    <p class="max-w-[62ch]">
-      With the plugin installed there is nothing to run. Opening Claude Code in a mapped checkout
-      puts the repository's stack, its exact run and test commands, the repositories it talks to and
-      the team's notes into the session before you type. Outside a mapped repository it prints
-      nothing at all.
-    </p>
-
-    <Plate caption="What lands in the session, before the first prompt.">
-      <pre><span class="c">orgami — winit (winitapp), map from 2026-08-17</span>
-
-<span class="b">WinIt-backend</span> <span class="c">— TypeScript, Agenda jobs, Express, Parse SDK, Parse Server</span>
-
-  <span class="c">build:</span> tsc -p tsconfig.build.json
-  <span class="c">test:</span>  cross-env NODE_ENV=test ... jest --silent --coverage test/*
-
-<span class="c">linked repos:</span>
-  calls <span class="a">-&gt;</span> Attorney-Portal
-  changes-with <span class="a">&lt;-</span> Close-SMS-Report
-
-<span class="t">team notes on this repo:</span>
-- Parse Dashboard config lives in WinIt-ParseDashboard/index.js, not the fork …</pre>
-    </Plate>
-
-    <p class="max-w-[62ch]">
-      Cursor reaches the same parity through its session hook. Anything that speaks MCP — opencode,
-      Windsurf, Zed, Codex, VS Code — gets the map as tools. Anything that reads
-      <span class="font-mono text-[0.86em]">AGENTS.md</span>{" "}can have the context written into the repository
-      itself, as a marked block that is rewritten and never overwrites what you wrote around it.
-    </p>
-  </Section>
-
-  <div class="crease"></div>
-
-  <!-- ── 05 install ────────────────────────────────────────────────────── -->
-  <Section
-    id="install"
-    folio="05 — install"
-    title="A minute, and one command."
-    note="CONTRIBUTING.md — testing it needs no organization, no token and no model."
-  >
-    <p class="mb-8 max-w-[62ch]">
-      It installs what is missing, puts <span class="font-mono text-[0.86em]">orgami</span> on your PATH,
-      and wires up Claude Code and Cursor if they are on the machine.
-      <span class="font-mono text-[0.86em]">--dry-run</span> prints every step without touching anything.
-    </p>
-
-    <div class="grid max-w-[820px] gap-4">
-      <Command command={install} />
-      <Command command="gh auth login" />
-      <Command command="orgami init" />
-    </div>
-
-    <p class="mt-8 max-w-[62ch]">
-      In Claude Code,{" "}
-      <span class="font-mono text-[0.86em]">/plugin marketplace add achevalier-dev/orgami</span>{" "}
-      brings the skill, the commands and the session hook. A colleague who wants the map without scanning
-      anything runs <span class="font-mono text-[0.86em]">orgami join</span>{" "}— it finds the repository that
-      already holds one.
-    </p>
-
-    <p class="mt-8 max-w-[62ch] border-l-[3px] border-vermilion pl-5 text-[18px] text-ink-soft">
-      <strong class="font-semibold text-ink">What it costs.</strong> Two model calls a week — the recap
-      and the decision mining — plus one a weekday morning if you turn the digest on. Everything else is
-      gh, git, jq and grep.
-    </p>
-
-    <p class="mt-8 max-w-[62ch]">
-      The scan is pattern matching over committed files, so every organization it has never met is a
-      gap in it. An organization it read wrong is the most useful bug report there is — there is a
-      template for exactly that, and it needs no fix attached.
-    </p>
-  </Section>
-
-  <footer class="border-t border-ink/15 bg-paper-shade/60">
-    <div
-      class="mx-auto flex max-w-[1180px] flex-wrap items-baseline justify-between gap-x-10 gap-y-4 px-6 py-12 font-mono text-[12px] text-ink-faint md:px-10"
-    >
-      <div class="flex flex-wrap gap-x-7 gap-y-2">
-        <a href="https://github.com/achevalier-dev/orgami" class="no-underline hover:text-vermilion"
-          >source</a
-        >
-        <a
-          href="https://github.com/achevalier-dev/orgami#readme"
-          class="no-underline hover:text-vermilion">documentation</a
-        >
-        <a
-          href="https://github.com/achevalier-dev/orgami/labels/good%20first%20issue"
-          class="no-underline hover:text-vermilion">good first issues</a
-        >
-        <a
-          href="https://github.com/achevalier-dev/orgami/discussions"
-          class="no-underline hover:text-vermilion">discussions</a
-        >
       </div>
-      <div>MIT · Antoine Chevalier · org + origami</div>
-    </div>
-  </footer>
+    </section>
+
+    <!-- reproduce ---------------------------------------------------------->
+    <section class="mt-16">
+      <h2 class="label mb-1">Check it yourself</h2>
+      <p class="mt-3 max-w-[68ch] text-[14px] text-ink-2">
+        Point it at any public organization your GitHub token can read. Nothing is written outside
+        the directory you name, nothing is pushed anywhere, and the first three commands cost no
+        model call at all.
+      </p>
+
+      <div class="mt-6 grid max-w-[820px] gap-3">
+        <Command command="export ORGAMI_HOME=/tmp/orgami-check" />
+        <Command command="orgami init check --org honojs" />
+        <Command command="orgami scan && orgami doc" />
+        <Command command="orgami query hono" />
+      </div>
+
+      <p class="mt-6 max-w-[68ch] text-[13.5px] text-ink-2">
+        You should get 14 repositories, a graph of 17 nodes and 49 edges, and the same evidence
+        lines shown above — the organization moves, so the counts move with it. The tool's own test
+        suite needs no organization and no token:{" "}
+        <a href={`${SRC}/script/check`}>script/check</a> runs shellcheck, the shell syntax pass and
+        both report programs against fixture data.
+      </p>
+    </section>
+
+    <!-- cost --------------------------------------------------------------->
+    <section class="mt-16 border border-hair-2 bg-sheet-2 p-6">
+      <h2 class="label">What it costs to run</h2>
+      <p class="mt-3 max-w-[68ch] text-[14px] text-ink-2">
+        Two model calls a week — the recap and the decision mining — plus one a weekday morning if
+        you turn the daily digest on, and none on a day where nothing landed. Everything else is{" "}
+        <span class="text-ink">gh</span>, <span class="text-ink">git</span>,{" "}
+        <span class="text-ink">jq</span> and <span class="text-ink">grep</span>. The map, the
+        runbooks, the browser and every number in every report are free.
+      </p>
+    </section>
+
+    <footer class="mt-16 border-t border-hair pt-8 text-[12.5px] text-ink-3">
+      <div class="flex flex-wrap gap-x-7 gap-y-2">
+        <a href="https://github.com/achevalier-dev/orgami">source</a>
+        <a href="https://github.com/achevalier-dev/orgami-demo">the run on this page</a>
+        <a href="https://github.com/achevalier-dev/orgami/blob/main/CONTRIBUTING.md">contributing</a>
+        <a href="https://github.com/achevalier-dev/orgami/issues">issues</a>
+        <a href="https://github.com/achevalier-dev/orgami/releases/tag/v1.0.0">v1.0.0</a>
+      </div>
+      <p class="mt-4">MIT · Antoine Chevalier · org + origami</p>
+    </footer>
+  </main>
 </Base>

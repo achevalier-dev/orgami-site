@@ -23,6 +23,24 @@ for (const s of shots) {
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
   page.on("pageerror", (e) => errors.push(String(e)));
   await page.goto(target, { waitUntil: "networkidle" });
+
+  // Walk the page so lazily loaded images are actually loaded before the shot,
+  // then wait for every one of them to finish decoding.
+  await page.evaluate(async () => {
+    const step = window.innerHeight;
+    for (let y = 0; y < document.body.scrollHeight; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 120));
+    }
+    window.scrollTo(0, 0);
+    await Promise.all(
+      Array.from(document.images)
+        .filter((img) => !img.complete)
+        .map((img) => new Promise((r) => img.addEventListener("load", r, { once: true }))),
+    );
+  });
+  await page.waitForTimeout(250);
+
   await page.screenshot({ path: `shots/${s.name}.png`, fullPage: true });
   if (errors.length) {
     failed = true;
