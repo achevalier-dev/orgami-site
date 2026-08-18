@@ -1,0 +1,29 @@
+---
+const links = [
+  ["How it works", "#how"],
+  ["Proof", "#proof"],
+  ["Limits", "#limits"],
+  ["FAQ", "#faq"],
+];
+---
+
+<header class="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur">
+  <nav class="mx-auto flex h-14 max-w-[1120px] items-center gap-6 px-5 sm:px-8">
+    <a href="#top" class="flex items-center gap-2 font-mono text-[15px] font-semibold tracking-tight">
+      <span class="inline-block h-[15px] w-[15px] rotate-45 rounded-[3px] border-[2px] border-brand"></span>
+      orgami
+    </a>
+
+    <div class="ml-4 hidden gap-6 text-[14px] text-fg-2 md:flex">
+      {links.map(([label, href]) => <a href={href} class="hover:text-fg">{label}</a>)}
+    </div>
+
+    <div class="ml-auto flex items-center gap-3">
+      <a
+        href="https://github.com/achevalier-dev/orgami"
+        class="hidden text-[14px] text-fg-2 hover:text-fg sm:inline">GitHub</a
+      >
+      <a href="#install" class="btn btn-primary !px-4 !py-2 !text-[14px]">Install</a>
+    </div>
+  </nav>
+</header>
