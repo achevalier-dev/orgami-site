@@ -1,0 +1,36 @@
+---
+interface Props {
+  command: string;
+}
+const { command } = Astro.props;
+---
+
+<div
+  class="flex items-center gap-3 overflow-x-auto rounded-[3px] border border-rule bg-surface px-3.5 py-3 font-mono text-[13px]"
+>
+  <span class="text-accent select-none" aria-hidden="true">❯</span>
+  <code class="whitespace-pre" data-command>{command}</code>
+  <button
+    type="button"
+    data-copy
+    class="ml-auto flex-none cursor-pointer rounded-[2px] border border-rule bg-transparent px-2.5 py-[5px] font-mono text-[10.5px] tracking-[0.12em] text-muted uppercase transition-colors hover:border-accent hover:text-accent"
+  >
+    Copy
+  </button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const code = button.parentElement?.querySelector<HTMLElement>("[data-command]");
+      if (!code) return;
+      try {
+        await navigator.clipboard.writeText(code.textContent?.trim() ?? "");
+        button.textContent = "Copied";
+        setTimeout(() => (button.textContent = "Copy"), 1400);
+      } catch {
+        button.textContent = "Press ⌘C";
+      }
+    });
+  });
+</script>

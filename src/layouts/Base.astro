@@ -1,0 +1,49 @@
+---
+import "../styles/global.css";
+import Rail from "../components/Rail.astro";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const site = "https://orgami.dev";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${site}/og.png`} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- The theme is settled before first paint, so a dark reader never gets
+         a white flash while the stylesheet is still arriving. -->
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem("orgami-theme");
+          if (saved === "dark" || saved === "light") {
+            document.documentElement.setAttribute("data-theme", saved);
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+
+  <body>
+    <Rail />
+    <div class="mx-auto max-w-[1080px] px-6 xl:pl-[160px]">
+      <slot />
+    </div>
+  </body>
+</html>

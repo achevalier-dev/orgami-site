@@ -1,0 +1,185 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   The palette is orgami's own: the xterm-256 colours its terminal browser uses
+   for each kind of node, so the site and the tool agree about what a host is.
+   Semantic variables switch with the theme; @theme inline hands them to
+   Tailwind, so `bg-paper` and `text-ink` follow along.
+--------------------------------------------------------------------------- */
+
+:root {
+  --c-paper: #edeff2;
+  --c-surface: #f7f8fa;
+  --c-surface-2: #e4e8ed;
+  --c-ink: #0f141b;
+  --c-ink-soft: #333c48;
+  --c-muted: #5b6673;
+  --c-faint: #8b95a3;
+  --c-rule: #d3d8df;
+  --c-accent: #0a6fa8;
+  --c-accent-ink: #ffffff;
+
+  /* node kinds, straight out of lib/style.sh */
+  --c-repo: #0a6fa8;
+  --c-host: #b4643a;
+  --c-tool: #4e7a52;
+  --c-service: #7c55a8;
+
+  --c-term-bg: #101620;
+  --c-term-ink: #c6ced9;
+  --c-term-blue: #3fb0f0;
+  --c-term-rust: #d7875f;
+  --c-term-green: #87af87;
+  --c-term-violet: #af87d7;
+  --c-term-bright: #e6ecf4;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --c-paper: #0c1017;
+    --c-surface: #131a23;
+    --c-surface-2: #1b232e;
+    --c-ink: #ccd4e0;
+    --c-ink-soft: #aeb8c6;
+    --c-muted: #7e8a99;
+    --c-faint: #5d6875;
+    --c-rule: #2b3542;
+    --c-accent: #3fb0f0;
+    --c-accent-ink: #06131c;
+    --c-repo: #3fb0f0;
+    --c-host: #d7875f;
+    --c-tool: #87af87;
+    --c-service: #af87d7;
+    --c-term-bg: #060a10;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --c-paper: #0c1017;
+  --c-surface: #131a23;
+  --c-surface-2: #1b232e;
+  --c-ink: #ccd4e0;
+  --c-ink-soft: #aeb8c6;
+  --c-muted: #7e8a99;
+  --c-faint: #5d6875;
+  --c-rule: #2b3542;
+  --c-accent: #3fb0f0;
+  --c-accent-ink: #06131c;
+  --c-repo: #3fb0f0;
+  --c-host: #d7875f;
+  --c-tool: #87af87;
+  --c-service: #af87d7;
+  --c-term-bg: #060a10;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--c-paper);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-ink: var(--c-ink);
+  --color-ink-soft: var(--c-ink-soft);
+  --color-muted: var(--c-muted);
+  --color-faint: var(--c-faint);
+  --color-rule: var(--c-rule);
+  --color-accent: var(--c-accent);
+  --color-accent-ink: var(--c-accent-ink);
+  --color-repo: var(--c-repo);
+  --color-host: var(--c-host);
+  --color-tool: var(--c-tool);
+  --color-service: var(--c-service);
+  --color-term: var(--c-term-bg);
+  --color-term-ink: var(--c-term-ink);
+
+  --font-mono: "JetBrains Mono", "SFMono-Regular", "SF Mono", Menlo, Consolas,
+    "DejaVu Sans Mono", monospace;
+  --font-serif: Charter, "Bitstream Charter", "Iowan Old Style",
+    "Palatino Linotype", Palatino, "Source Serif 4", Georgia, serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 2rem;
+  }
+
+  body {
+    background: var(--c-paper);
+    color: var(--c-ink);
+    font-family: var(--font-serif);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+  }
+
+  a {
+    color: var(--c-accent);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-mono);
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  /* Terminal output, verbatim. The classes are the node kinds again. */
+  .term {
+    background: var(--c-term-bg);
+    color: var(--c-term-ink);
+    border: 1px solid var(--c-rule);
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.62;
+    padding: 18px 20px;
+    overflow-x: auto;
+  }
+  .term pre { margin: 0; font: inherit; }
+  .term .c { color: var(--c-faint); }
+  .term .a { color: var(--c-term-blue); }
+  .term .h { color: var(--c-term-rust); }
+  .term .t { color: var(--c-term-green); }
+  .term .s { color: var(--c-term-violet); }
+  .term .b { color: var(--c-term-bright); font-weight: 600; }
+
+  /* The evidence footnote: this page follows the tool's own rule. */
+  .src {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--c-faint);
+    margin-top: 26px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--c-rule);
+  }
+  .src::before { content: "↳ "; }
+
+  .prose-col { max-width: 68ch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,58 @@
+---
+// The recorded session. A video rather than the GIF it came from: a third of
+// the weight, a poster frame with something on it, and it stays still for a
+// reader who asked their system for less motion.
+interface Props {
+  caption: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="mt-[34px] overflow-hidden rounded-[4px] border border-rule bg-term">
+  <video
+    id="demo"
+    class="block h-auto w-full"
+    src="/demo.mp4"
+    poster="/demo-poster.webp"
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    aria-label="A terminal session: orgami prints a repository's stack and commands, then one node and every edge that named it with the file and line each came from, then the map browsing in a terminal UI, then the week's numbers."
+  ></video>
+  <figcaption
+    class="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-rule bg-surface px-3.5 py-2.5 font-mono text-[11px] leading-relaxed text-faint"
+  >
+    <span>{caption}</span>
+    <button
+      type="button"
+      id="demo-toggle"
+      class="ml-auto cursor-pointer rounded-[2px] border border-rule bg-transparent px-2 py-[3px] font-mono text-[10px] tracking-[0.12em] text-muted uppercase transition-colors hover:border-accent hover:text-accent"
+      hidden>Play</button
+    >
+  </figcaption>
+</figure>
+
+<script>
+  const video = document.getElementById("demo") as HTMLVideoElement | null;
+  const toggle = document.getElementById("demo-toggle") as HTMLButtonElement | null;
+  if (video && toggle) {
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const label = () => (toggle.textContent = video.paused ? "Play" : "Pause");
+
+    if (!still) {
+      video.autoplay = true;
+      video.play().catch(() => {});
+    }
+    toggle.hidden = false;
+    label();
+
+    toggle.addEventListener("click", () => {
+      video.paused ? video.play() : video.pause();
+      label();
+    });
+    video.addEventListener("play", label);
+    video.addEventListener("pause", label);
+  }
+</script>

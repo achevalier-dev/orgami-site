@@ -1,0 +1,11 @@
+---
+interface Props {
+  id: string;
+  first?: boolean;
+}
+const { id, first = false } = Astro.props;
+---
+
+<section id={id} class:list={["py-[76px]", !first && "border-t border-rule"]}>
+  <slot />
+</section>

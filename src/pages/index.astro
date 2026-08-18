@@ -1,0 +1,317 @@
+---
+import Base from "../layouts/Base.astro";
+import Section from "../components/Section.astro";
+import Command from "../components/Command.astro";
+import Figure from "../components/Figure.astro";
+import Demo from "../components/Demo.astro";
+import Artifact from "../components/Artifact.astro";
+
+const install =
+  "curl -fsSL https://raw.githubusercontent.com/achevalier-dev/orgami/main/bootstrap.sh | bash";
+
+const keys = [
+  ["tab", "Move between the map, the repositories, the notes and the recaps"],
+  ["type", "Filter the list"],
+  ["enter", "Print whatever is under the cursor into your scrollback, to copy or pipe"],
+  ["ctrl-o", "Open the repository on GitHub"],
+  ["ctrl-n", "Write a note against the repository you are reading"],
+];
+
+const facts = [
+  "MIT",
+  "macOS · Linux · WSL · Windows",
+  "Claude Code plugin, or any MCP client",
+  "2 model calls a week",
+];
+---
+
+<Base
+  title="orgami"
+  description="Map every repository a GitHub organization has, recap what it merges, and hand all of it to your coding agent before you type."
+>
+  <Section id="top" first>
+    <p class="mb-5 font-mono text-[11px] tracking-[0.19em] text-muted uppercase">
+      org + origami — folding a flat sheet of repositories into a shape you can see
+    </p>
+
+    <div class="prose-col">
+      <h1
+        class="mb-[22px] text-[clamp(30px,4.6vw,49px)] leading-[1.1] font-semibold tracking-[-0.03em]"
+      >
+        Know the organization before you touch its code.
+      </h1>
+
+      <p class="mb-[18px] text-[20px] leading-[1.55] text-ink-soft">
+        orgami maps every repository a GitHub organization has — what each one is, how to run it,
+        what it talks to, where it deploys — recaps the pull requests it merged each week, digests
+        each day, and hands all of it to your coding agent before you type anything.
+      </p>
+
+      <p class="text-muted">
+        One directory per company, so several clients sit side by side without mixing. No daemon,
+        no database, no web app: bash, <code class="font-mono text-[0.88em]">gh</code>,
+        <code class="font-mono text-[0.88em]">jq</code>,
+        <code class="font-mono text-[0.88em]">fzf</code>,
+        <code class="font-mono text-[0.88em]">gum</code>, a timer, and plain files that diff cleanly
+        in git.
+      </p>
+    </div>
+
+    <div class="mt-[26px] max-w-[68ch]">
+      <Command command={install} />
+    </div>
+
+    <div class="mt-[22px] flex flex-wrap gap-x-[18px] gap-y-2 font-mono text-[11.5px] text-muted">
+      {facts.map((f) => <span>{f}</span>)}
+    </div>
+
+    <Demo caption="Recorded against the public honojs organization. Every line came out of a committed file." />
+  </Section>
+
+  <Section id="evidence">
+    <div class="prose-col">
+      <h2 class="mb-2.5 text-[clamp(21px,2.5vw,27px)] font-semibold tracking-[-0.02em]">
+        Nothing in it is a guess.
+      </h2>
+      <p>
+        The scan reads what is committed — nothing is inferred by a model. Every edge in the map
+        carries the <code class="font-mono text-[0.88em]">file:line</code> it was read from, so any
+        claim can be opened and checked. When the scan cannot see something it says so instead of
+        inventing it: a missing edge means “not found in committed configuration”, never
+        “not connected”.
+      </p>
+    </div>
+
+    <div class="term mt-[30px]">
+      <pre><span class="a">▪ gum</span>  <span class="c">repo</span>
+
+  <span class="c">language     </span>Go
+  <span class="c">description  </span>A tool for glamorous shell scripts
+
+<span class="c">REFERENCES</span>
+  bubbletea                     <span class="c">write/write.go:18</span>
+  glamour                       <span class="c">go.mod:11</span>
+  lipgloss                      <span class="c">write/write.go:19</span>
+
+<span class="c">USES</span>
+  <span class="t">docker</span>                        <span class="c">Dockerfile</span>
+  <span class="t">github-actions</span>                <span class="c">.github/workflows</span>
+
+<span class="c">REFERENCED BY</span>
+  vhs                           <span class="c">examples/README.md:5</span>
+  homebrew-tap                  <span class="c">gum.rb:13</span></pre>
+    </div>
+
+    <div class="prose-col">
+      <p class="src">lib/scan.sh — every edge is emitted with its evidence argument, or not at all</p>
+    </div>
+  </Section>
+
+  <Section id="makes">
+    <div class="prose-col">
+      <h2 class="mb-2.5 text-[clamp(21px,2.5vw,27px)] font-semibold tracking-[-0.02em]">
+        What it makes.
+      </h2>
+      <p>
+        Five artifacts, all markdown and JSON on disk, all committed to a docs repository you
+        choose. Where a model is involved it writes prose only —
+        <code class="font-mono text-[0.88em]">jq</code> computes every number and hands it over, because
+        a model asked to both count and narrate does neither reliably.
+      </p>
+    </div>
+
+    <div
+      class="mt-[34px] grid gap-px overflow-hidden rounded-[4px] border border-rule bg-rule md:grid-cols-2"
+    >
+      <Artifact title="The map" kind="repo">
+        Deploy tooling, servers, backing services, frameworks, run and test commands, routes, and
+        which repositories reference which. One <code class="font-mono text-[0.88em]">graph.json</code>;
+        the architecture doc, the diagrams and the terminal browser all render from it.
+      </Artifact>
+
+      <Artifact title="The weekly recap" kind="host">
+        Every pull request the organization merged, grouped by why it happened rather than by
+        repository, with a section on how the team worked — review concentration, cycle time, how
+        much merged with nobody else reading it.
+      </Artifact>
+
+      <Artifact title="The daily digest" kind="tool">
+        What merged, what opened, what is waiting on someone, and commits with no pull request
+        behind them — the half a merge-based recap cannot see. A quiet day writes no file at all.
+      </Artifact>
+
+      <Artifact title="Team notes" kind="service">
+        The cause someone found at 2am, the reason the obvious fix does not work. Screened for
+        credentials and for any other client on the machine before they are written, and again
+        before they are pushed.
+      </Artifact>
+
+      <Artifact title="Runbooks and decisions" kind="muted" wide>
+        Per repository: how to run it, which workflow ships it and on what trigger, where its alerts
+        go, what it drags with it when it changes. Alongside them,
+        <code class="font-mono text-[0.88em]">DECISIONS.md</code> — what was adopted, dropped or
+        rejected, mined from merged pull requests one week at a time, every bullet carrying its pull
+        request.
+      </Artifact>
+    </div>
+
+    <div class="prose-col">
+      <p
+        class="mt-[30px] border-l-2 border-accent bg-surface px-5 py-4 text-[16px] text-ink-soft"
+      >
+        <strong class="font-semibold text-ink">A day is not a small week.</strong> Most of a day's work
+        has not merged yet, so the digest reads four sources instead of one — and skips the day entirely
+        when nothing landed. A digest that says “nothing happened” every weekend teaches people to stop
+        opening it.
+      </p>
+      <p class="src">lib/daily.jq — the numbers · prompts/daily.md — what the model may narrate</p>
+    </div>
+  </Section>
+
+  <Section id="screen">
+    <div class="prose-col">
+      <h2 class="mb-2.5 text-[clamp(21px,2.5vw,27px)] font-semibold tracking-[-0.02em]">
+        One screen for all of it.
+      </h2>
+      <p>
+        <code class="font-mono text-[0.88em]">orgami view</code> is four tabs over the same data: the
+        map, the repositories, the team's notes and the recaps. The list is on the left, the evidence
+        is in the pane on the right, and the header says how stale the map is and whether this week has
+        a recap yet.
+      </p>
+    </div>
+
+    <Figure
+      src="/tui.png"
+      alt="The orgami terminal browser: a header with the organization and map age, tabs for Map, Repos, Notes and Recaps, a list of repositories on the left, and a repository card on the right showing run commands, linked repositories, deploy targets and endpoints, each with the file and line it came from."
+      caption="The Repos tab. Every line in the right-hand pane carries the file it was read from."
+    />
+
+    <table class="mt-7 w-full border-collapse text-[15px]">
+      <thead>
+        <tr>
+          <th
+            class="border-b border-rule py-2.5 pr-0 pl-0 text-left font-mono text-[11px] font-medium tracking-[0.14em] text-muted uppercase"
+            >Key</th
+          >
+          <th
+            class="border-b border-rule py-2.5 text-left font-mono text-[11px] font-medium tracking-[0.14em] text-muted uppercase"
+            >What it does</th
+          >
+        </tr>
+      </thead>
+      <tbody>
+        {
+          keys.map(([key, what]) => (
+            <tr>
+              <td class="w-[1%] border-b border-rule py-2.5 pr-[26px] font-mono text-[12.5px] whitespace-nowrap text-accent">
+                {key}
+              </td>
+              <td class="border-b border-rule py-2.5 text-ink-soft">{what}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+
+    <div class="prose-col">
+      <p class="src">
+        lib/tui.sh — every pane is a subcommand, so orgami query prints exactly what the preview shows
+      </p>
+    </div>
+  </Section>
+
+  <Section id="agents">
+    <div class="prose-col">
+      <h2 class="mb-2.5 text-[clamp(21px,2.5vw,27px)] font-semibold tracking-[-0.02em]">
+        Your agent already has it.
+      </h2>
+      <p>
+        With the plugin installed there is nothing to run. Opening Claude Code in a mapped checkout
+        puts the repository's stack, its exact run and test commands, the repositories it talks to and
+        the team's notes into the session before you type. Outside a mapped repository it prints
+        nothing at all.
+      </p>
+    </div>
+
+    <div class="term mt-[30px]">
+      <pre><span class="c">orgami — winit (winitapp), map from 2026-08-17</span>
+
+<span class="b">WinIt-backend</span> <span class="c">— TypeScript, Agenda jobs, Express, Parse SDK, Parse Server</span>
+
+  <span class="c">build:</span> tsc -p tsconfig.build.json
+  <span class="c">test:</span>  cross-env NODE_ENV=test ... jest --silent --coverage test/*
+
+<span class="c">linked repos:</span>
+  calls <span class="a">-&gt;</span> Attorney-Portal
+  changes-with <span class="a">&lt;-</span> Close-SMS-Report
+
+<span class="t">team notes on this repo:</span>
+- Parse Dashboard config lives in WinIt-ParseDashboard/index.js, not the fork …</pre>
+    </div>
+
+    <div class="prose-col">
+      <p class="mt-[26px]">
+        Cursor reaches the same parity through its session hook. Anything that speaks MCP — opencode,
+        Windsurf, Zed, Codex, VS Code — gets the map as tools. Anything that reads
+        <code class="font-mono text-[0.88em]">AGENTS.md</code> can have the context written into the
+        repository itself, as a marked block that is rewritten and never overwrites what you wrote
+        around it.
+      </p>
+      <p class="src">hooks/session-context.sh · lib/mcp.py · lib/agents.sh</p>
+    </div>
+  </Section>
+
+  <Section id="install">
+    <div class="prose-col">
+      <h2 class="mb-2.5 text-[clamp(21px,2.5vw,27px)] font-semibold tracking-[-0.02em]">
+        Install it in a minute.
+      </h2>
+      <p>
+        One command installs what is missing, puts <code class="font-mono text-[0.88em]">orgami</code> on
+        your PATH, and wires up Claude Code and Cursor if they are on the machine.
+        <code class="font-mono text-[0.88em]">--dry-run</code> prints every step without touching anything.
+      </p>
+    </div>
+
+    <div class="mt-[30px] grid max-w-[68ch] gap-3.5">
+      <Command command={install} />
+      <Command command="gh auth login" />
+      <Command command="orgami init" />
+    </div>
+
+    <div class="prose-col">
+      <p class="mt-[26px]">
+        In Claude Code, <code class="font-mono text-[0.88em]">/plugin marketplace add achevalier-dev/orgami</code>
+        brings the skill, the commands and the session hook. A colleague who wants the map without
+        scanning anything runs <code class="font-mono text-[0.88em]">orgami join</code> — it finds the
+        repository that already holds one.
+      </p>
+
+      <p class="mt-[26px] border-l-2 border-accent bg-surface px-5 py-4 text-[16px] text-ink-soft">
+        <strong class="font-semibold text-ink">What it costs.</strong> Two model calls a week — the recap
+        and the decision mining — plus one a weekday morning if you turn the digest on. Everything else is
+        gh, git, jq and grep. <code class="font-mono text-[0.88em]">orgami report --stats-only</code> costs
+        nothing at all.
+      </p>
+
+      <p class="mt-[26px]">
+        The scan is pattern matching over committed files, so every organization it has never met is a
+        gap in it. An organization it read wrong is the most useful bug report there is — there is a
+        template for exactly that, and it needs no fix attached.
+      </p>
+      <p class="src">CONTRIBUTING.md — testing it needs no organization, no token and no model</p>
+    </div>
+  </Section>
+
+  <footer class="border-t border-rule py-11 pb-[70px] font-mono text-[12.5px] text-muted">
+    <div class="mb-5 flex flex-wrap gap-x-[26px] gap-y-2.5">
+      <a href="https://github.com/achevalier-dev/orgami">Source</a>
+      <a href="https://github.com/achevalier-dev/orgami#readme">Documentation</a>
+      <a href="https://github.com/achevalier-dev/orgami/labels/good%20first%20issue">Good first issues</a>
+      <a href="https://github.com/achevalier-dev/orgami/discussions">Discussions</a>
+      <a href="https://github.com/achevalier-dev/orgami/releases/tag/v1.0.0">v1.0.0</a>
+    </div>
+    <div>MIT · built by Antoine Chevalier · org + origami</div>
+  </footer>
+</Base>
