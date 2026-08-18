@@ -20,6 +20,9 @@ const site = "https://orgami.dev";
     <meta name="theme-color" content="#fcfcfa" />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/geist.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/geistmono.woff2" crossorigin />
+    <link rel="canonical" href={site + "/"} />
+    <meta property="og:url" content={site + "/"} />
+    <meta property="og:site_name" content="orgami" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -27,6 +30,11 @@ const site = "https://orgami.dev";
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
+    <a
+      href="#top"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-[8px] focus:bg-fg focus:px-3 focus:py-2 focus:text-[14px] focus:text-bg"
+      >Skip to content</a
+    >
     <slot />
   </body>
 </html>

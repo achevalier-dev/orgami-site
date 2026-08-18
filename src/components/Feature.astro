@@ -1,0 +1,29 @@
+---
+// A feature card that shows the thing rather than describing it: a title, one
+// sentence, and two or three lines of the actual output underneath.
+interface Props {
+  kind: "repo" | "host" | "tool" | "service";
+  title: string;
+  body: string;
+  href: string;
+  linkLabel: string;
+}
+const { kind, title, body, href, linkLabel } = Astro.props;
+---
+
+<div class="card card-hover flex flex-col gap-4">
+  <div class="flex items-center gap-2.5">
+    <span class="h-[9px] w-[9px] rounded-[2px]" style={`background: var(--k-${kind})`}></span>
+    <h3 class="text-[18px]">{title}</h3>
+  </div>
+
+  <p class="text-[15px] leading-[1.55] text-fg-2">{body}</p>
+
+  <div class="mt-auto overflow-hidden rounded-[8px] border border-line bg-bg-sub">
+    <div class="overflow-x-auto p-3 font-mono text-[11.5px] leading-[1.6] text-fg-2">
+      <slot />
+    </div>
+  </div>
+
+  <a class="link-brand text-[13.5px]" href={href}>{linkLabel} →</a>
+</div>

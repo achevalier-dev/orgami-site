@@ -4,6 +4,7 @@ import Nav from "../components/Nav.astro";
 import Command from "../components/Command.astro";
 import Terminal from "../components/Terminal.astro";
 import Demo from "../components/Demo.astro";
+import Feature from "../components/Feature.astro";
 
 const DEMO = "https://github.com/achevalier-dev/orgami-demo/blob/main";
 const SRC = "https://github.com/achevalier-dev/orgami/blob/main";
@@ -18,29 +19,6 @@ const worksWith = [
   "Codex",
   "VS Code",
   "any MCP client",
-];
-
-const features = [
-  {
-    kind: "repo",
-    title: "A map with receipts",
-    body: "Every edge names the file it was read from. Open it, check it, or don't — but it is never a model's guess.",
-  },
-  {
-    kind: "host",
-    title: "Weekly recap",
-    body: "What the org merged, grouped by why it happened. jq counts, the model writes around numbers it was handed.",
-  },
-  {
-    kind: "tool",
-    title: "Daily digest",
-    body: "What merged, what opened, what is waiting on someone, and commits with no PR behind them. Quiet days write nothing.",
-  },
-  {
-    kind: "service",
-    title: "Team memory",
-    body: "Notes attach to the repo you were standing in and sync through git — screened for credentials and other clients first.",
-  },
 ];
 
 const steps = [
@@ -96,7 +74,9 @@ const faq = [
 
   <main id="top">
     <!-- hero ------------------------------------------------------------->
-    <section class="mx-auto max-w-[1120px] px-5 pt-16 pb-14 sm:px-8 lg:pt-24">
+    <section class="relative overflow-hidden">
+      <div class="grid-bg" aria-hidden="true"></div>
+      <div class="container relative pt-16 pb-16 lg:pt-24">
       <div class="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
           <span class="pill">
@@ -144,50 +124,80 @@ const faq = [
         </Terminal>
       </div>
 
-      <!-- works with: true statements, no borrowed logos -->
-      <div class="mt-16 border-y border-line py-5">
-        <div class="flex flex-wrap items-center gap-x-8 gap-y-3">
-          <span class="eyebrow">Feeds</span>
-          {worksWith.map((w) => <span class="text-[14px] text-fg-2">{w}</span>)}
+      <!-- what reads the map. true statements, no borrowed logos -->
+      <div class="mt-16 border-t border-line pt-8">
+        <p class="head-eyebrow">Feeds the context to</p>
+        <div class="mt-4 flex flex-wrap gap-2.5">
+          {worksWith.map((w) => <span class="chip">{w}</span>)}
         </div>
+      </div>
       </div>
     </section>
 
     <!-- features ---------------------------------------------------------->
-    <section class="mx-auto max-w-[1120px] px-5 py-16 sm:px-8">
-      <h2 class="max-w-[22ch] text-[clamp(28px,3.6vw,40px)]">
-        Four things it writes, all of them files.
-      </h2>
-      <p class="mt-4 max-w-[62ch] text-[17px] text-fg-2">
+    <section class="container section">
+      <p class="head-eyebrow">Output</p>
+      <h2 class="head-title max-w-[22ch]">Four things it writes, all of them files.</h2>
+      <p class="head-sub">
         Markdown and JSON on disk, committed to a documentation repository you choose. Where a
         model is involved it writes prose only — never a number.
       </p>
 
       <div class="mt-10 grid gap-5 sm:grid-cols-2">
-        {
-          features.map((f) => (
-            <div class="card">
-              <span
-                class="mb-4 inline-block h-[10px] w-[10px] rounded-[3px]"
-                style={`background: var(--k-${f.kind})`}
-              />
-              <h3 class="text-[19px]">{f.title}</h3>
-              <p class="mt-2 text-[15.5px] leading-[1.55] text-fg-2">{f.body}</p>
-            </div>
-          ))
-        }
+        <Feature
+          kind="repo"
+          title="A map with receipts"
+          body="Every edge names the file it was read from. Open it, check it, or don't — but it is never a model's guess."
+          href={`${DEMO}/graph.json`}
+          linkLabel="graph.json from a real run"
+        >
+          <span class="text-fg-3">middleware</span> → hono<br />
+          <span class="text-fg-3">packages/zod-openapi/CHANGELOG.md:153</span>
+        </Feature>
+
+        <Feature
+          kind="host"
+          title="Weekly recap"
+          body="What the org merged, grouped by why it happened. jq counts, the model writes around numbers it was handed."
+          href={`${SRC}/lib/stats.jq`}
+          linkLabel="the program that counts"
+        >
+          "merged": 27,<br />
+          "median_hours_to_merge": 33.6,<br />
+          "merged_without_review": 7
+        </Feature>
+
+        <Feature
+          kind="tool"
+          title="Daily digest"
+          body="What merged, what opened, what is waiting on someone, and commits with no pull request behind them."
+          href={`${DEMO}/reports/daily/2026-08-17.md`}
+          linkLabel="a digest it wrote"
+        >
+          <span class="text-fg-3">## Waiting on someone</span><br />
+          hono#3295 — 728 days, opened by usualoma
+        </Feature>
+
+        <Feature
+          kind="service"
+          title="Team memory"
+          body="Notes attach to the repo you were standing in and sync through git — screened for credentials and other clients first."
+          href={`${SRC}/lib/notes.sh`}
+          linkLabel="how the screening works"
+        >
+          <span class="text-fg-3">refusing to write this note:</span><br />
+          - looks like a credential: AKIA…
+        </Feature>
       </div>
     </section>
 
     <!-- product shot ------------------------------------------------------>
     <section class="border-y border-line bg-bg-sub">
-      <div class="mx-auto max-w-[1120px] px-5 py-16 sm:px-8">
-        <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div class="container section">
+        <div class="mb-9 flex flex-wrap items-end justify-between gap-5">
           <div>
-            <p class="eyebrow">The browser</p>
-            <h2 class="mt-2 max-w-[20ch] text-[clamp(26px,3.2vw,36px)]">
-              The whole org in one screen.
-            </h2>
+            <p class="head-eyebrow">The browser</p>
+            <h2 class="head-title max-w-[20ch]">The whole org in one screen.</h2>
           </div>
           <p class="max-w-[46ch] text-[15.5px] text-fg-2">
             Map, repositories, team notes and recaps in four tabs. The evidence sits in the preview
@@ -196,29 +206,45 @@ const faq = [
           </p>
         </div>
 
-        <img
-          src="/tui.png"
-          alt="The orgami terminal browser: tabs for Map, Repos, Notes and Recaps, a repository list on the left, and a card on the right showing run commands, linked repositories, deploy targets and endpoints with the file each came from."
-          loading="lazy"
-          decoding="async"
-          class="block h-auto w-full rounded-[14px] border border-line-2 shadow-[0_24px_60px_-34px_rgba(11,13,16,0.5)]"
-        />
+        <div class="relative">
+          <div class="shot-glow" aria-hidden="true"></div>
+          <div class="shot relative">
+            <div class="flex items-center gap-2 border-b border-line-dark px-4 py-2.5">
+              <span class="h-[9px] w-[9px] rounded-full bg-[#3a4049]"></span>
+              <span class="h-[9px] w-[9px] rounded-full bg-[#3a4049]"></span>
+              <span class="h-[9px] w-[9px] rounded-full bg-[#3a4049]"></span>
+              <span class="ml-2 font-mono text-[11.5px] text-fg-invert-2">orgami view</span>
+            </div>
+            <img
+              src="/tui.webp"
+              width="1500"
+              height="820"
+              alt="The orgami terminal browser: tabs for Map, Repos, Notes and Recaps, a repository list on the left, and a card on the right showing run commands, linked repositories, deploy targets and endpoints with the file each came from."
+              loading="lazy"
+              decoding="async"
+              class="block w-full"
+            />
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- how it works ------------------------------------------------------>
-    <section id="how" class="mx-auto max-w-[1120px] px-5 py-20 sm:px-8">
-      <p class="eyebrow">How it works</p>
-      <h2 class="mt-2 max-w-[24ch] text-[clamp(28px,3.6vw,40px)]">
-        Three commands, then it stays current on its own.
-      </h2>
+    <section id="how" class="container section">
+      <p class="head-eyebrow">How it works</p>
+      <h2 class="head-title max-w-[24ch]">Three commands, then it stays current on its own.</h2>
 
-      <div class="mt-10 grid gap-6 md:grid-cols-3">
+      <div class="relative mt-12 grid gap-8 md:grid-cols-3 md:gap-6">
+        <div
+          class="absolute top-[13px] right-0 left-0 hidden h-px bg-line md:block"
+          aria-hidden="true"></div>
         {
           steps.map((s) => (
-            <div class="flex flex-col gap-3">
-              <span class="font-mono text-[13px] text-brand">{s.n}</span>
-              <h3 class="text-[19px]">{s.title}</h3>
+            <div class="relative flex flex-col gap-3">
+              <span class="relative flex h-[26px] w-[26px] items-center justify-center rounded-full border border-line bg-bg font-mono text-[11.5px] text-brand">
+                {s.n}
+              </span>
+              <h3 class="mt-1 text-[19px]">{s.title}</h3>
               <p class="text-[15.5px] leading-[1.55] text-fg-2">{s.body}</p>
               <div class="mt-1">
                 <Command command={s.cmd} />
@@ -237,27 +263,25 @@ const faq = [
 
     <!-- proof -------------------------------------------------------------->
     <section id="proof" class="border-y border-line bg-bg-sub">
-      <div class="mx-auto max-w-[1120px] px-5 py-20 sm:px-8">
-        <p class="eyebrow">Proof, not promises</p>
-        <h2 class="mt-2 max-w-[26ch] text-[clamp(28px,3.6vw,40px)]">
-          One real run, published in full.
-        </h2>
-        <p class="mt-4 max-w-[64ch] text-[17px] text-fg-2">
+      <div class="container section">
+        <p class="head-eyebrow">Proof, not promises</p>
+        <h2 class="head-title max-w-[26ch]">One real run, published in full.</h2>
+        <p class="head-sub">
           Everything on this page comes from a single run against the public{" "}
           <a class="link-brand" href="https://github.com/honojs">honojs</a> organization on 18 August
           2026. The output was not edited — it is a repository you can read right now.
         </p>
 
         <div class="mt-9 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-          <div class="card">
+          <div class="card card-hover">
             <h3 class="text-[17px]">What the run produced</h3>
-            <dl class="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-[15px] sm:grid-cols-3">
-              <div><dt class="text-fg-3">Repositories</dt><dd class="font-mono">14</dd></div>
-              <div><dt class="text-fg-3">Scan time</dt><dd class="font-mono">4s</dd></div>
-              <div><dt class="text-fg-3">Graph</dt><dd class="font-mono">17 / 49</dd></div>
-              <div><dt class="text-fg-3">Files written</dt><dd class="font-mono">35</dd></div>
-              <div><dt class="text-fg-3">Model calls</dt><dd class="font-mono">1</dd></div>
-              <div><dt class="text-fg-3">Edited by hand</dt><dd class="font-mono">0</dd></div>
+            <dl class="stat mt-5 grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3">
+              <div><dd class="stat-value">14</dd><dt class="stat-label">repositories</dt></div>
+              <div><dd class="stat-value">4s</dd><dt class="stat-label">to scan them</dt></div>
+              <div><dd class="stat-value">17/49</dd><dt class="stat-label">nodes / edges</dt></div>
+              <div><dd class="stat-value">35</dd><dt class="stat-label">files written</dt></div>
+              <div><dd class="stat-value">1</dd><dt class="stat-label">model call</dt></div>
+              <div><dd class="stat-value">0</dd><dt class="stat-label">edited by hand</dt></div>
             </dl>
             <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-[14px]">
               <a class="link-brand" href={`${DEMO}/ARCHITECTURE.md`}>ARCHITECTURE.md</a>
@@ -268,7 +292,7 @@ const faq = [
             </div>
           </div>
 
-          <div class="card">
+          <div class="card card-hover">
             <h3 class="text-[17px]">How much of it carries a file</h3>
             <p class="mt-2 text-[14px] text-fg-2">
               Of the 49 edges in that graph, this is exactly what each kind can cite.
@@ -303,33 +327,33 @@ const faq = [
     </section>
 
     <!-- limits ------------------------------------------------------------>
-    <section id="limits" class="mx-auto max-w-[1120px] px-5 py-20 sm:px-8">
-      <p class="eyebrow">Limits</p>
-      <h2 class="mt-2 max-w-[24ch] text-[clamp(28px,3.6vw,40px)]">What it cannot do.</h2>
+    <section id="limits" class="container section">
+      <p class="head-eyebrow">Limits</p>
+      <h2 class="head-title max-w-[24ch]">What it cannot do.</h2>
 
       <div class="mt-8 grid gap-5 md:grid-cols-2">
-        <div class="card">
+        <div class="card card-hover">
           <h3 class="text-[17px]">Runtime wiring is invisible</h3>
           <p class="mt-2 text-[15px] text-fg-2">
             Services joined by an environment variable set in a dashboard, a service mesh or a
             gateway leave nothing in a repository.
           </p>
         </div>
-        <div class="card">
+        <div class="card card-hover">
           <h3 class="text-[17px]">Coupling is correlation</h3>
           <p class="mt-2 text-[15px] text-fg-2">
             Which repositories change together is counted from merged pull requests. Useful blast
             radius, not a dependency, and labelled that way.
           </p>
         </div>
-        <div class="card">
+        <div class="card card-hover">
           <h3 class="text-[17px]">The scan is pattern matching</h3>
           <p class="mt-2 text-[15px] text-fg-2">
             Every stack it has never met is a gap in it. An unrecognised repository gets an empty
             page rather than a guessed one.
           </p>
         </div>
-        <div class="card">
+        <div class="card card-hover">
           <h3 class="text-[17px]">The model never counts</h3>
           <p class="mt-2 text-[15px] text-fg-2">
             <a class="link-brand" href={`${SRC}/lib/stats.jq`}>jq</a> computes every figure and hands
@@ -340,8 +364,9 @@ const faq = [
     </section>
 
     <!-- install ------------------------------------------------------------>
-    <section id="install" class="border-t border-line bg-bg-dark">
-      <div class="mx-auto max-w-[1120px] px-5 py-20 text-fg-invert sm:px-8">
+    <section id="install" class="relative overflow-hidden border-t border-line bg-bg-dark">
+      <div class="dot-bg" aria-hidden="true"></div>
+      <div class="container section relative text-fg-invert">
         <h2 class="max-w-[20ch] text-[clamp(30px,4vw,44px)]">Map your first org in a minute.</h2>
         <p class="mt-4 max-w-[58ch] text-[17px] text-fg-invert-2">
           The installer adds what is missing, puts orgami on your PATH, and wires up Claude Code and
@@ -373,9 +398,9 @@ const faq = [
     </section>
 
     <!-- faq ----------------------------------------------------------------->
-    <section id="faq" class="mx-auto max-w-[820px] px-5 py-20 sm:px-8">
-      <p class="eyebrow">FAQ</p>
-      <h2 class="mt-2 text-[clamp(28px,3.6vw,40px)]">Questions worth asking first.</h2>
+    <section id="faq" class="container section max-w-[820px]">
+      <p class="head-eyebrow">FAQ</p>
+      <h2 class="head-title">Questions worth asking first.</h2>
 
       <div class="mt-8 divide-y divide-line border-y border-line">
         {

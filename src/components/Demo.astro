@@ -6,9 +6,9 @@ const { caption } = Astro.props;
 ---
 
 <figure class="my-10">
-  <div
-    class="border-[6px] border-paper-lit bg-plate shadow-[0_1px_0_rgba(255,255,255,0.6),0_24px_44px_-26px_rgba(40,28,14,0.6),0_2px_8px_rgba(40,28,14,0.14)]"
-  >
+  <div class="relative">
+    <div class="shot-glow" aria-hidden="true"></div>
+  <div class="shot relative">
     <video
       id="demo"
       class="block h-auto w-full"
@@ -21,15 +21,15 @@ const { caption } = Astro.props;
       aria-label="A terminal session: orgami prints a repository's stack and commands, then one node and every edge that named it with the file and line each came from, then the map browsing in a terminal UI, then the week's numbers."
     ></video>
   </div>
+  </div>
   <figcaption
-    class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11.5px] text-ink-faint"
+    class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11.5px] text-fg-3"
   >
-    <span class="rule-mark">—</span>
     <span>{caption}</span>
     <button
       type="button"
       id="demo-toggle"
-      class="ml-auto cursor-pointer border border-ink/20 px-2 py-[3px] font-mono text-[10px] tracking-[0.14em] uppercase transition-colors hover:border-vermilion hover:text-vermilion"
+      class="ml-auto cursor-pointer rounded-[6px] border border-line-2 px-2.5 py-1 font-mono text-[11px] text-fg-3 transition-colors hover:border-brand hover:text-brand"
       hidden>Play</button
     >
   </figcaption>

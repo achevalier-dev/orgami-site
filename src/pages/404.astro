@@ -1,0 +1,18 @@
+---
+import Base from "../layouts/Base.astro";
+import Nav from "../components/Nav.astro";
+---
+
+<Base title="Not found · orgami" description="That page does not exist.">
+  <Nav />
+  <main id="top" class="container flex min-h-[62vh] flex-col justify-center py-20">
+    <p class="head-eyebrow">404</p>
+    <h1 class="head-title max-w-[18ch]">That page is not in the map.</h1>
+    <p class="head-sub">
+      Which is the honest answer a scan gives when it cannot find something. Try the
+      <a class="link-brand" href="/">front page</a>, the
+      <a class="link-brand" href="https://github.com/achevalier-dev/orgami">source</a>, or the
+      <a class="link-brand" href="https://github.com/achevalier-dev/orgami-demo">published run</a>.
+    </p>
+  </main>
+</Base>

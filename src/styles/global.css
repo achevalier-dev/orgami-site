@@ -193,3 +193,109 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Polish pass: one spacing scale, states on everything interactive, and the
+   small quiet details — tabular figures, pretty wrapping, no layout shift.
+--------------------------------------------------------------------------- */
+
+@layer base {
+  body { text-rendering: optimizeLegibility; }
+  p { text-wrap: pretty; }
+  img, video { height: auto; }
+  /* every figure that lines up in a column lines up */
+  .tnum, table, dl, .stat { font-variant-numeric: tabular-nums; }
+}
+
+@layer components {
+  .section { padding-block: clamp(64px, 8vw, 104px); }
+  .container { margin-inline: auto; max-width: 1120px; padding-inline: 20px; }
+  @media (min-width: 640px) { .container { padding-inline: 32px; } }
+
+  /* Section openers all share one shape: eyebrow, heading, one line under it. */
+  .head-eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--fg-3); }
+  .head-title { margin-top: 10px; font-size: clamp(28px, 3.6vw, 40px); }
+  .head-sub { margin-top: 14px; max-width: 62ch; font-size: 17px; color: var(--fg-2); }
+
+  .card {
+    position: relative;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+  }
+  .card-hover:hover {
+    border-color: var(--line-2);
+    box-shadow: 0 1px 2px rgba(11, 13, 16, 0.04), 0 18px 36px -28px rgba(11, 13, 16, 0.45);
+    transform: translateY(-2px);
+  }
+
+  .btn-primary:active { transform: translateY(1px); }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 11px;
+    font-size: 13px;
+    color: var(--fg-2);
+    background: var(--bg);
+    transition: border-color 0.16s ease, color 0.16s ease;
+  }
+  .chip:hover { border-color: var(--line-2); color: var(--fg); }
+
+  /* A number that is meant to be read as a number. */
+  .stat-value { font-size: 30px; line-height: 1.1; letter-spacing: -0.03em; font-weight: 600; }
+  .stat-label { margin-top: 4px; font-size: 13px; color: var(--fg-3); }
+
+  /* The hero's ground: a fine grid that fades out, so the terminal has somewhere
+     to sit instead of floating on flat white. */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, var(--line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 60% 30%, #000 10%, transparent 72%);
+    mask-image: radial-gradient(ellipse 70% 60% at 60% 30%, #000 10%, transparent 72%);
+    opacity: 0.75;
+    pointer-events: none;
+  }
+
+  .dot-bg {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+    background-size: 22px 22px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 20% 0%, #000, transparent 70%);
+    mask-image: radial-gradient(ellipse 80% 70% at 20% 0%, #000, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* The screenshot deserves a frame and something to lift it off the page. */
+  .shot {
+    position: relative;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--line-2);
+    overflow: hidden;
+    background: var(--bg-dark);
+    box-shadow: 0 2px 4px rgba(11, 13, 16, 0.06), 0 40px 80px -48px rgba(11, 13, 16, 0.55);
+  }
+  .shot-glow {
+    position: absolute;
+    inset: -12% -6% auto;
+    height: 60%;
+    background: radial-gradient(ellipse at 50% 0%, rgba(17, 86, 240, 0.16), transparent 70%);
+    filter: blur(24px);
+    pointer-events: none;
+  }
+
+  details > summary::-webkit-details-marker { display: none; }
+
+  /* On a phone the terminal still scrolls sideways, but it should need to do
+     far less of it. */
+  @media (max-width: 640px) {
+    .term { font-size: 11px; padding: 14px 14px; }
+  }
+}
