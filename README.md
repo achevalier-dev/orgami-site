@@ -15,19 +15,29 @@ npm run build    # static output in dist/
 
 ## The design
 
-The palette is orgami's own: the xterm-256 colours its terminal browser gives
-each kind of node — repo, host, tool, service — used here as the only colour
-that carries meaning. Monospace for headings, a serif for prose. The rail down
-the left is the crease the name refers to, and it doubles as navigation.
+**org + origami.** The page is a sheet of paper: ivory ground, ink, creases that
+catch light between sections, and one vermilion mark. It commits to that world
+and carries no second theme — every colour is painted in `src/styles/global.css`,
+never inherited from the reader's system.
 
-Every section is footnoted with the file it describes (`lib/scan.sh`,
-`lib/daily.jq`, `lib/tui.sh`). That is the tool's own rule: a claim you cannot
-open and check does not belong in the output.
+The hero performs the name once, on load: a flat sheet of real repository names
+folds down and settles, mountain and valley alternating so the light lands on
+opposite faces (`src/components/Fold.astro`). That is the only orchestrated
+motion on the page; a reader who asks for less motion gets the sheet already
+folded.
 
-`src/styles/global.css` holds the whole token set. Light is the bare `:root`;
-dark redefines the same variables under `prefers-color-scheme` and under
-`[data-theme="dark"]`, so the toggle wins in both directions and a reader who
-never touches it still gets their system's answer.
+Fraunces for display, Newsreader for prose, JetBrains Mono for anything the tool
+itself printed — all three self-hosted as variable woff2 in `public/fonts`, so
+nothing is fetched from a CDN and nothing silently falls back.
+
+Terminal output is set as a **plate**: dark printed matter with a paper edge and
+a drop shadow, laid on the sheet. The four node colours — repository, host, tool,
+service — are the only colours that carry meaning, and they mean exactly what
+they mean inside orgami.
+
+Each section carries its source in the margin (`lib/scan.sh`, `lib/daily.jq`,
+`lib/tui.sh`), set as marginalia. That is the tool's own rule applied to its own
+site: a claim you cannot open and check does not belong in the output.
 
 ## Checking a change
 

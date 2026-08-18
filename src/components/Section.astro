@@ -1,11 +1,35 @@
 ---
+// A page of the guide: a numbered folio, a wide prose measure, and a margin
+// that holds the file each claim came from.
 interface Props {
   id: string;
-  first?: boolean;
+  folio: string;
+  title: string;
+  note?: string;
 }
-const { id, first = false } = Astro.props;
+const { id, folio, title, note } = Astro.props;
 ---
 
-<section id={id} class:list={["py-[76px]", !first && "border-t border-rule"]}>
-  <slot />
+<section id={id} class="mx-auto max-w-[1180px] px-6 py-[72px] md:px-10 lg:py-[100px]">
+  <div class="grid gap-x-12 gap-y-6 lg:grid-cols-[minmax(0,1fr)_190px]">
+    <div class="min-w-0">
+      <p class="mb-4 flex items-baseline gap-3 font-mono text-[11px] tracking-[0.22em] text-ink-faint uppercase">
+        <span class="rule-mark">{folio}</span>
+        <span class="h-px flex-1 bg-ink/15"></span>
+      </p>
+
+      <h2
+        class="mb-6 text-[clamp(30px,4.2vw,46px)] leading-[1.06] font-semibold tracking-[-0.02em]"
+      >
+        {title}
+      </h2>
+
+      <slot />
+    </div>
+
+    <aside class="lg:pt-[52px]">
+      {note && <p class="margin-note">{note}</p>}
+      <slot name="margin" />
+    </aside>
+  </div>
 </section>

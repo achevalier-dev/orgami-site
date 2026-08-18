@@ -6,14 +6,14 @@ const { command } = Astro.props;
 ---
 
 <div
-  class="flex items-center gap-3 overflow-x-auto rounded-[3px] border border-rule bg-surface px-3.5 py-3 font-mono text-[13px]"
+  class="flex items-center gap-3 overflow-x-auto border border-ink/15 bg-paper-lit px-4 py-3 font-mono text-[13.5px] shadow-[0_1px_0_rgba(255,255,255,0.7),0_10px_20px_-18px_rgba(40,28,14,0.6)]"
 >
-  <span class="text-accent select-none" aria-hidden="true">❯</span>
-  <code class="whitespace-pre" data-command>{command}</code>
+  <span class="text-vermilion select-none" aria-hidden="true">❯</span>
+  <code class="whitespace-pre text-ink" data-command>{command}</code>
   <button
     type="button"
     data-copy
-    class="ml-auto flex-none cursor-pointer rounded-[2px] border border-rule bg-transparent px-2.5 py-[5px] font-mono text-[10.5px] tracking-[0.12em] text-muted uppercase transition-colors hover:border-accent hover:text-accent"
+    class="ml-auto flex-none cursor-pointer border border-ink/20 bg-transparent px-2.5 py-1 font-mono text-[10px] tracking-[0.14em] text-ink-faint uppercase transition-colors hover:border-vermilion hover:text-vermilion"
   >
     Copy
   </button>

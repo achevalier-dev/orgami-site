@@ -1,185 +1,199 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   The palette is orgami's own: the xterm-256 colours its terminal browser uses
-   for each kind of node, so the site and the tool agree about what a host is.
-   Semantic variables switch with the theme; @theme inline hands them to
-   Tailwind, so `bg-paper` and `text-ink` follow along.
+   orgami — org + origami. The page is a sheet of paper: ivory ground, ink,
+   creases that catch light, and one vermilion mark. It commits to that world
+   rather than carrying a second theme, so every colour here is painted, never
+   inherited from whatever the reader's system prefers.
 --------------------------------------------------------------------------- */
 
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/fraunces.woff2") format("woff2-variations");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Newsreader";
+  src: url("/fonts/newsreader.woff2") format("woff2-variations");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains.woff2") format("woff2-variations");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --c-paper: #edeff2;
-  --c-surface: #f7f8fa;
-  --c-surface-2: #e4e8ed;
-  --c-ink: #0f141b;
-  --c-ink-soft: #333c48;
-  --c-muted: #5b6673;
-  --c-faint: #8b95a3;
-  --c-rule: #d3d8df;
-  --c-accent: #0a6fa8;
-  --c-accent-ink: #ffffff;
+  /* paper, and the two faces a fold makes */
+  --paper: #efe9dc;
+  --paper-lit: #f6f2e9;
+  --paper-shade: #e2d9c6;
+  --paper-deep: #d6cab2;
 
-  /* node kinds, straight out of lib/style.sh */
-  --c-repo: #0a6fa8;
-  --c-host: #b4643a;
-  --c-tool: #4e7a52;
-  --c-service: #7c55a8;
+  --ink: #16120e;
+  --ink-soft: #4a4038;
+  --ink-faint: #8a7d6d;
 
-  --c-term-bg: #101620;
-  --c-term-ink: #c6ced9;
-  --c-term-blue: #3fb0f0;
-  --c-term-rust: #d7875f;
-  --c-term-green: #87af87;
-  --c-term-violet: #af87d7;
-  --c-term-bright: #e6ecf4;
+  --vermilion: #d6452b;
+  --vermilion-deep: #a8331f;
+
+  /* the four kinds, mixed for ink on paper rather than light on black */
+  --k-repo: #1f4e79;
+  --k-host: #b4552a;
+  --k-tool: #3f6b44;
+  --k-service: #6a4a8c;
+
+  /* the plate: printed matter dropped onto the sheet */
+  --plate: #17171c;
+  --plate-ink: #d8d3c8;
+  --plate-blue: #7fb2dc;
+  --plate-rust: #d79a72;
+  --plate-green: #9dbf9d;
+  --plate-faint: #6d6a64;
 
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --c-paper: #0c1017;
-    --c-surface: #131a23;
-    --c-surface-2: #1b232e;
-    --c-ink: #ccd4e0;
-    --c-ink-soft: #aeb8c6;
-    --c-muted: #7e8a99;
-    --c-faint: #5d6875;
-    --c-rule: #2b3542;
-    --c-accent: #3fb0f0;
-    --c-accent-ink: #06131c;
-    --c-repo: #3fb0f0;
-    --c-host: #d7875f;
-    --c-tool: #87af87;
-    --c-service: #af87d7;
-    --c-term-bg: #060a10;
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme="dark"] {
-  --c-paper: #0c1017;
-  --c-surface: #131a23;
-  --c-surface-2: #1b232e;
-  --c-ink: #ccd4e0;
-  --c-ink-soft: #aeb8c6;
-  --c-muted: #7e8a99;
-  --c-faint: #5d6875;
-  --c-rule: #2b3542;
-  --c-accent: #3fb0f0;
-  --c-accent-ink: #06131c;
-  --c-repo: #3fb0f0;
-  --c-host: #d7875f;
-  --c-tool: #87af87;
-  --c-service: #af87d7;
-  --c-term-bg: #060a10;
-  color-scheme: dark;
-}
-
 @theme inline {
-  --color-paper: var(--c-paper);
-  --color-surface: var(--c-surface);
-  --color-surface-2: var(--c-surface-2);
-  --color-ink: var(--c-ink);
-  --color-ink-soft: var(--c-ink-soft);
-  --color-muted: var(--c-muted);
-  --color-faint: var(--c-faint);
-  --color-rule: var(--c-rule);
-  --color-accent: var(--c-accent);
-  --color-accent-ink: var(--c-accent-ink);
-  --color-repo: var(--c-repo);
-  --color-host: var(--c-host);
-  --color-tool: var(--c-tool);
-  --color-service: var(--c-service);
-  --color-term: var(--c-term-bg);
-  --color-term-ink: var(--c-term-ink);
+  --color-paper: var(--paper);
+  --color-paper-lit: var(--paper-lit);
+  --color-paper-shade: var(--paper-shade);
+  --color-paper-deep: var(--paper-deep);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-vermilion: var(--vermilion);
+  --color-k-repo: var(--k-repo);
+  --color-k-host: var(--k-host);
+  --color-k-tool: var(--k-tool);
+  --color-k-service: var(--k-service);
+  --color-plate: var(--plate);
+  --color-plate-ink: var(--plate-ink);
 
-  --font-mono: "JetBrains Mono", "SFMono-Regular", "SF Mono", Menlo, Consolas,
-    "DejaVu Sans Mono", monospace;
-  --font-serif: Charter, "Bitstream Charter", "Iowan Old Style",
-    "Palatino Linotype", Palatino, "Source Serif 4", Georgia, serif;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Newsreader", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 2rem;
+    scroll-padding-top: 3rem;
   }
 
   body {
-    background: var(--c-paper);
-    color: var(--c-ink);
-    font-family: var(--font-serif);
-    font-size: 17px;
-    line-height: 1.62;
+    background-color: var(--paper);
+    /* the grain of a sheet: two barely-there washes, no image to download */
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.5), transparent 42%),
+      radial-gradient(circle at 82% 78%, rgba(160, 140, 110, 0.14), transparent 46%);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 19px;
+    line-height: 1.6;
+    font-optical-sizing: auto;
     -webkit-font-smoothing: antialiased;
   }
 
   ::selection {
-    background: var(--c-accent);
-    color: var(--c-accent-ink);
+    background: var(--vermilion);
+    color: var(--paper-lit);
   }
 
   a {
-    color: var(--c-accent);
-    text-underline-offset: 3px;
-    text-decoration-thickness: 1px;
+    color: var(--ink);
+    text-decoration-color: var(--vermilion);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
+    transition: color 0.15s ease;
   }
+  a:hover { color: var(--vermilion-deep); }
 
   :focus-visible {
-    outline: 2px solid var(--c-accent);
+    outline: 2px solid var(--vermilion);
     outline-offset: 3px;
-    border-radius: 2px;
   }
 
-  h1,
-  h2,
-  h3 {
-    font-family: var(--font-mono);
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 20, "WONK" 1;
     text-wrap: balance;
   }
 }
 
 @layer components {
-  /* Terminal output, verbatim. The classes are the node kinds again. */
-  .term {
-    background: var(--c-term-bg);
-    color: var(--c-term-ink);
-    border: 1px solid var(--c-rule);
-    border-radius: 3px;
+  /* A crease: light on one side, shadow on the other. Sections are separated
+     by folds, not by hairlines. */
+  .crease {
+    position: relative;
+    height: 34px;
+    background: linear-gradient(
+      to bottom,
+      var(--paper-shade) 0%,
+      var(--paper-deep) 48%,
+      var(--paper-lit) 52%,
+      var(--paper) 100%
+    );
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+
+  /* Printed matter laid on the sheet: a dark plate with a paper edge. */
+  .plate {
+    background: var(--plate);
+    color: var(--plate-ink);
     font-family: var(--font-mono);
-    font-size: 12.5px;
-    line-height: 1.62;
-    padding: 18px 20px;
+    font-size: 13px;
+    line-height: 1.65;
+    padding: 22px 24px;
     overflow-x: auto;
+    border: 6px solid var(--paper-lit);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.6),
+      0 18px 34px -22px rgba(40, 28, 14, 0.55),
+      0 2px 6px rgba(40, 28, 14, 0.14);
   }
-  .term pre { margin: 0; font: inherit; }
-  .term .c { color: var(--c-faint); }
-  .term .a { color: var(--c-term-blue); }
-  .term .h { color: var(--c-term-rust); }
-  .term .t { color: var(--c-term-green); }
-  .term .s { color: var(--c-term-violet); }
-  .term .b { color: var(--c-term-bright); font-weight: 600; }
+  .plate pre { margin: 0; font: inherit; }
+  .plate .c { color: var(--plate-faint); }
+  .plate .a { color: var(--plate-blue); }
+  .plate .h { color: var(--plate-rust); }
+  .plate .t { color: var(--plate-green); }
+  .plate .b { color: #f2eee4; font-weight: 600; }
 
-  /* The evidence footnote: this page follows the tool's own rule. */
-  .src {
-    display: block;
+  /* Marginalia: the file a claim came from, set in the outer margin like a
+     printed reference. This page keeps orgami's own rule. */
+  .margin-note {
     font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--c-faint);
-    margin-top: 26px;
-    padding-top: 8px;
-    border-top: 1px dashed var(--c-rule);
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: var(--ink-faint);
+    border-left: 2px solid var(--vermilion);
+    padding-left: 10px;
   }
-  .src::before { content: "↳ "; }
 
-  .prose-col { max-width: 68ch; }
+  .rule-mark {
+    color: var(--vermilion);
+    font-family: var(--font-mono);
+  }
+
+  .lede {
+    font-size: clamp(21px, 2.3vw, 25px);
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }
